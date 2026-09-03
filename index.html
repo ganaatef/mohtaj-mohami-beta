@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="/mohtaj-mohami-beta/">
+
+  <meta charset="UTF-8">
+  <meta name="theme-color" content="#FF8A3D">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="محتاج محامي — مساعدة قانونية وطلب محامي.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="محتاج محامي">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>محتاج محامي</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    html,body{margin:0;height:100%;background:#17120f;color:#fff8f0;font-family:Tahoma,Arial,sans-serif}
+    #app-loader{position:fixed;inset:0;display:grid;place-items:center;text-align:center;padding:24px;background:#17120f;z-index:9999}
+    #app-loader.hidden{display:none}.loader-mark{width:68px;height:68px;margin:auto;display:grid;place-items:center;border-radius:22px;background:#ff8a3d;color:#17120f;font-size:34px;font-weight:900;box-shadow:0 16px 50px #ff8a3d33}
+    .loader-ring{width:34px;height:34px;margin:24px auto 14px;border:3px solid #ffffff22;border-top-color:#ff8a3d;border-radius:50%;animation:spin .8s linear infinite}
+    #loader-retry{display:none;margin:18px auto 0;border:0;border-radius:13px;padding:12px 22px;background:#ff8a3d;color:#17120f;font-weight:800}
+    @keyframes spin{to{transform:rotate(360deg)}}
+  </style>
+  <script>
+    // GitHub Pages SPA redirect: restore path from query param (see 404.html)
+    (function(l){
+      if (l.search && l.search.indexOf('?/') === 0) {
+        var decoded = l.search.slice(2).split('&').map(function(part) {
+          return part.replace(/~and~/g, '&');
+        }).join('?');
+        window.history.replaceState(
+          null,
+          '',
+          l.pathname.slice(0, -1) + '/' + decoded + l.hash
+        );
+      }
+    })(window.location);
+  </script>
+</head>
+<body>
+  <div id="app-loader" role="status" aria-live="polite">
+    <div><div class="loader-mark">م</div><div class="loader-ring"></div><strong>جاري فتح محتاج محامي</strong><p id="loader-message" style="color:#b9aaa0">لحظات ونجهز حسابك...</p><button id="loader-retry" onclick="location.reload()">إعادة المحاولة</button></div>
+  </div>
+  <!--
+    You can customize the "flutter_bootstrap.js?v=6659575643accfa0e63d572b5bbb12e235af628b" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js?v=6659575643accfa0e63d572b5bbb12e235af628b" defer></script>
+</body>
+</html>
