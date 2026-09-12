@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <title>طلب حذف الحساب | محتاج محامي</title>
+  <style>
+    :root{color-scheme:dark;--bg:#071728;--card:#0d1b2d;--text:#faf7ee;--muted:#c5b9a6;--accent:#e1a23a;--danger:#ff6b6b}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.75}
+    main{max-width:680px;margin:0 auto;padding:48px 20px}.card{background:var(--card);border:1px solid #38506a;border-radius:20px;padding:28px}
+    h1{margin-top:0}p,li{color:var(--muted)}label{display:block;margin:18px 0 8px;font-weight:700;color:var(--text)}
+    input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid #58483f;background:#120e0c;color:var(--text);font-size:16px;direction:ltr;text-align:left}
+    button{margin-top:16px;width:100%;padding:14px;border:0;border-radius:12px;background:var(--accent);color:#071728;font-size:16px;font-weight:800;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}.status{margin-top:16px;padding:12px;border-radius:10px;display:none}.ok{display:block;background:#173a2a;color:#dff7e9}.err{display:block;background:#451f22;color:#ffe4e6}
+    a{color:var(--accent)}.en{direction:ltr;text-align:left;border-top:1px solid #38506a;margin-top:28px;padding-top:24px}
+  </style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>طلب حذف حساب «محتاج محامي»</h1>
+    <p>يمكنك من هذه الصفحة طلب حذف حسابك والبيانات المرتبطة به حتى إذا لم يعد التطبيق متاحًا لديك.</p>
+    <ul>
+      <li>سنراجع الطلب للتحقق من الهوية ومن عدم وجود خدمة أو نزاع مالي مفتوح.</li>
+      <li>تُحذف أو تُزال هوية البيانات غير المطلوب الاحتفاظ بها.</li>
+      <li>قد نحتفظ بسجلات قانونية أو محاسبية أو أمنية محدودة إذا كان الاحتفاظ بها مطلوبًا قانونًا، مع تقليل البيانات قدر الإمكان.</li>
+    </ul>
+    <form id="deleteForm">
+      <label for="email">البريد الإلكتروني المسجل بالحساب</label>
+      <input id="email" name="email" type="email" autocomplete="email" required maxlength="200" placeholder="name@example.com">
+      <button id="submit" type="submit">إرسال طلب الحذف</button>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </form>
+    <p style="margin-top:20px"><a href="privacy.html">سياسة الخصوصية</a></p>
+
+    <section class="en" lang="en">
+      <h2>Account deletion request</h2>
+      <p>This page lets you request deletion of your Mohtaj Mohami account and associated data even if you no longer have access to the app. Limited legal, accounting, fraud-prevention, or security records may be retained where required, as described in the privacy policy.</p>
+    </section>
+  </div>
+</main>
+<script>
+  // Replaced by the deployment workflow. Keeping a sentinel instead of a beta
+  // fallback prevents a production policy page from silently sending requests
+  // to the wrong environment.
+  const API_BASE = 'https://mohtaj-mohami-beta-production.up.railway.app';
+  const form = document.getElementById('deleteForm');
+  const submit = document.getElementById('submit');
+  const statusBox = document.getElementById('status');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (API_BASE.startsWith('__')) {
+      statusBox.className = 'status err';
+      statusBox.textContent = 'صفحة الحذف غير مهيأة بعد. استخدم الدعم داخل التطبيق.';
+      return;
+    }
+    submit.disabled = true;
+    statusBox.className = 'status';
+    statusBox.textContent = '';
+    try {
+      const response = await fetch(`${API_BASE}/api/v1/account-deletion/request`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({email: document.getElementById('email').value})
+      });
+      if (!response.ok) throw new Error('request_failed');
+      statusBox.className = 'status ok';
+      statusBox.textContent = 'تم استلام الطلب. إذا كان البريد مرتبطًا بحساب، فسيتم تسجيل طلب الحذف ومراجعته.';
+      form.reset();
+    } catch (_) {
+      statusBox.className = 'status err';
+      statusBox.textContent = 'تعذر إرسال الطلب حاليًا. حاول مرة أخرى لاحقًا أو استخدم الدعم داخل التطبيق.';
+    } finally {
+      submit.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

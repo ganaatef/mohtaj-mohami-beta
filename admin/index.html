@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#071728">
+  <title>محتاج محامي | مركز تشغيل المنصة</title>
+  <link rel="stylesheet" href="./assets/admin.css">
+</head>
+<body>
+  <section id="loginView" class="login-view">
+    <div class="login-panel">
+      <img class="brand-mark" src="./assets/mohtaj-mark-v5.png" alt="محتاج محامي">
+      <div>
+        <p class="eyebrow">MOHTAJ MOHAMI OPERATIONS</p>
+        <h1>مركز تشغيل المنصة</h1>
+        <p class="subtle">لوحة إدارة وتشغيل موحدة للمستخدمين، الطلبات، الطوارئ، الدعم، المدفوعات والاشتراكات.</p>
+      </div>
+      <form id="loginForm" class="login-form">
+        <label>البريد الإلكتروني<input id="loginEmail" type="email" dir="ltr" autocomplete="username" required></label>
+        <label>كلمة المرور<input id="loginPassword" type="password" dir="ltr" autocomplete="current-password" required></label>
+        <button class="button primary wide" type="submit">دخول آمن</button>
+        <p id="loginError" class="form-error"></p>
+      </form>
+      <div class="login-foot"><span>دخول فريق المنصة فقط</span><span>بدون OTP للعملاء والمحامين</span></div>
+    </div>
+  </section>
+
+  <div id="appView" class="app-shell is-hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img class="brand-mark small" src="./assets/mohtaj-mark-v5.png" alt="">
+        <div><strong>محتاج محامي</strong><span>Operations Console</span></div>
+      </div>
+      <nav id="sideNav" class="side-nav" aria-label="لوحة الإدارة">
+        <p class="nav-group">القيادة</p>
+        <button data-view="dashboard" class="active"><span class="nav-icon">◫</span><span>مركز القيادة</span><b id="navAlertBadge" class="nav-badge is-hidden">0</b></button>
+        <button data-view="cases"><span class="nav-icon">▣</span><span>الطلبات والقضايا</span></button>
+        <button data-view="emergency"><span class="nav-icon">⚡</span><span>غرفة الطوارئ</span><b id="navEmergencyBadge" class="nav-badge is-hidden">0</b></button>
+
+        <p class="nav-group">المستخدمون</p>
+        <button data-view="lawyer-review"><span class="nav-icon">✓</span><span>اعتماد المحامين</span><b id="navLawyerBadge" class="nav-badge is-hidden">0</b></button>
+        <button data-view="kyc"><span class="nav-icon">⌾</span><span>مراجعة هوية العملاء</span><b id="navKycBadge" class="nav-badge is-hidden">0</b></button>
+        <button data-view="users"><span class="nav-icon">♙</span><span>المستخدمون 360°</span></button>
+        <button data-view="support"><span class="nav-icon">◉</span><span>مكتب الدعم</span><b id="navSupportBadge" class="nav-badge is-hidden">0</b></button>
+
+        <p class="nav-group" data-admin>المالية</p>
+        <button data-view="payments" data-admin><span class="nav-icon">↔</span><span>تحويلات InstaPay</span><b id="navPaymentBadge" class="nav-badge is-hidden">0</b></button>
+        <button data-view="subscriptions" data-admin><span class="nav-icon">◆</span><span>الاشتراكات</span><b id="navSubscriptionBadge" class="nav-badge is-hidden">0</b></button>
+        <button data-view="settlements" data-admin><span class="nav-icon">₤</span><span>التسويات</span></button>
+
+        <p class="nav-group">إدارة المنصة</p>
+        <button data-view="services"><span class="nav-icon">▤</span><span>كتالوج الخدمات</span></button>
+        <button data-view="directory" data-admin><span class="nav-icon">⌖</span><span>الدليل القانوني</span></button>
+        <button data-view="settings"><span class="nav-icon">⚙</span><span>إعدادات التشغيل</span></button>
+        <button data-view="audit" data-admin><span class="nav-icon">≣</span><span>مستكشف العمليات</span></button>
+        <button data-view="system" data-admin><span class="nav-icon">◌</span><span>صحة النظام</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <div id="staffIdentity" class="staff-chip"></div>
+        <button id="logoutButton" class="button ghost wide">تسجيل الخروج</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div class="topbar-title"><button id="mobileMenu" class="icon-button mobile-only">☰</button><div><p id="pageEyebrow" class="eyebrow">OPERATIONS</p><h1 id="pageTitle">مركز القيادة</h1></div></div>
+        <div class="topbar-tools">
+          <label class="global-search"><span>⌕</span><input id="globalSearch" placeholder="بحث سريع... /" autocomplete="off"></label>
+          <button id="refreshButton" class="icon-button" title="تحديث">↻</button>
+          <button id="commandButton" class="command-button" title="الأوامر السريعة"><span>أوامر</span><kbd>Ctrl K</kbd></button>
+          <div class="live-chip"><i></i><span>متصل</span></div>
+        </div>
+      </header>
+
+      <div id="pageStatus" class="page-status"><span id="lastUpdated">—</span><span>تحديث تلقائي كل 20 ثانية للصفحات التشغيلية</span></div>
+
+      <section id="view-dashboard" class="view active">
+        <div class="hero-row">
+          <div><h2>صورة تشغيلية لحظية</h2><p class="subtle">الأرقام المهمة والتنبيهات التي تحتاج قرارًا الآن.</p></div>
+          <div class="hero-actions"><button class="button primary" data-jump="cases">فتح مركز الطلبات</button><button class="button secondary" data-jump="support">فتح الدعم</button></div>
+        </div>
+        <div id="dashboardMetrics" class="metrics-grid skeleton-grid"></div>
+        <div class="dashboard-grid">
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">ACTION QUEUE</p><h3>يحتاج تدخل الآن</h3></div><span id="attentionCount" class="count-pill">0</span></div><div id="attentionQueue" class="action-list"></div></article>
+          <article class="panel"><div class="panel-head"><div><p class="eyebrow">SYSTEM</p><h3>صحة التشغيل</h3></div><span id="systemHealthBadge" class="status-pill neutral">جاري الفحص</span></div><div id="dashboardHealth" class="health-list"></div></article>
+        </div>
+        <article class="panel"><div class="panel-head"><div><p class="eyebrow">LIVE CASES</p><h3>آخر الطلبات النشطة</h3></div><button class="text-button" data-jump="cases">عرض الكل ←</button></div><div id="dashboardCases" class="data-shell"></div></article>
+      </section>
+
+      <section id="view-cases" class="view">
+        <div class="section-head"><div><h2>الطلبات والقضايا</h2><p class="subtle">مركز تشغيل لكل رحلة خدمة من الإنشاء حتى التسوية.</p></div><div class="filters"><input id="caseSearch" placeholder="رقم الطلب، العميل، المنطقة..."><select id="caseStatus"><option value="">كل الحالات</option></select><select id="caseType"><option value="">كل الطلبات</option><option value="false">عادية</option><option value="true">طوارئ</option></select></div></div>
+        <div id="caseStats" class="mini-metrics"></div>
+        <div id="caseTable" class="data-shell"></div>
+      </section>
+
+      <section id="view-emergency" class="view">
+        <div class="section-head"><div><h2>غرفة الطوارئ</h2><p class="subtle">متابعة البحث عن المحامي، الإسناد، التحرك، الوصول والتمويل في مكان واحد.</p></div><div class="filters"><select id="emergencyStatus"><option value="">الحالات النشطة</option><option value="DISPATCHING">جاري البحث</option><option value="ASSIGNED">تم الإسناد</option><option value="AWAITING_FUNDING">بانتظار التمويل</option><option value="FUNDED">ممول</option><option value="EN_ROUTE">في الطريق</option><option value="ARRIVED">وصل</option><option value="IN_PROGRESS">قيد التنفيذ</option></select></div></div>
+        <div id="emergencySummary" class="mini-metrics"></div>
+        <div id="emergencyTable" class="data-shell"></div>
+      </section>
+
+      <section id="view-lawyer-review" class="view">
+        <div class="section-head"><div><h2>اعتماد المحامين</h2><p class="subtle">قرار واحد بعد مراجعة الهوية والقيد والمستندات والبيانات المهنية والباقة المختارة.</p></div><div class="filters"><input id="lawyerReviewSearch" placeholder="بحث في الطلبات"></div></div>
+        <div id="lawyerReviewQueue" class="review-grid"></div>
+      </section>
+
+      <section id="view-kyc" class="view">
+        <div class="section-head"><div><h2>مراجعة هوية العملاء</h2><p class="subtle">تحقق من بيانات الهوية والصور قبل السماح بطلب خدمة قانونية.</p></div><div class="filters"><select id="kycFilter"><option value="PENDING">بانتظار المراجعة</option><option value="NEEDS_RESUBMISSION">إعادة إرسال</option><option value="REJECTED">مرفوض</option><option value="VERIFIED">تم التحقق</option></select></div></div>
+        <div id="kycQueue" class="review-grid"></div>
+      </section>
+
+      <section id="view-users" class="view">
+        <div class="section-head"><div><h2>المستخدمون 360°</h2><p class="subtle">الحساب، التوثيق، النشاط، الطلبات، الأجهزة والاشتراك في صفحة واحدة.</p></div><div class="filters"><input id="userSearch" placeholder="الاسم، البريد أو الهاتف"><select id="userRole"><option value="">كل الأدوار</option><option value="CLIENT">عميل</option><option value="LAWYER">محامي</option><option value="OPS_AGENT">تشغيل ودعم</option><option value="PLATFORM_ADMIN">مدير المنصة</option></select></div></div>
+        <div id="userTable" class="data-shell"></div>
+      </section>
+
+      <section id="view-support" class="view">
+        <div class="section-head"><div><h2>مكتب الدعم</h2><p class="subtle">Inbox موحد للمحادثات والأولوية والحالة والتصعيد وسجل نشاط المستخدم.</p></div><div class="filters"><select id="ticketFilter"><option value="">كل التذاكر</option><option value="OPEN">مفتوحة</option><option value="IN_PROGRESS">قيد المعالجة</option><option value="WAITING_USER">بانتظار المستخدم</option><option value="RESOLVED">محلولة</option><option value="CLOSED">مغلقة</option></select></div></div>
+        <div class="support-layout"><div class="ticket-column"><div id="ticketList" class="ticket-list"></div></div><div id="ticketConversation" class="conversation-panel empty-state"><strong>اختر تذكرة</strong><span>ستظهر المحادثة وسجل المستخدم هنا.</span></div></div>
+      </section>
+
+      <section id="view-payments" class="view" data-admin>
+        <div class="section-head"><div><h2>مراجعة تحويلات InstaPay</h2><p class="subtle">لا يتم تمويل أي خدمة لمجرد إدخال مرجع التحويل؛ الاعتماد بعد مطابقة وصول المبلغ فعليًا.</p></div></div>
+        <div id="paymentQueue" class="review-grid"></div>
+      </section>
+
+      <section id="view-subscriptions" class="view" data-admin>
+        <div class="section-head"><div><h2>الاشتراكات والباقات</h2><p class="subtle">BASIC / ACCREDITED / ELITE مع المراجعة، التفعيل، الانتهاء والترقية.</p></div><div class="filters"><select id="subscriptionStatus"><option value="">كل الحالات</option><option value="PENDING">قيد المراجعة</option><option value="ACTIVE">نشط</option><option value="REJECTED">مرفوض</option><option value="EXPIRED">منتهي</option></select><select id="subscriptionPlan"><option value="">كل الباقات</option><option value="BASIC">BASIC</option><option value="ACCREDITED">ACCREDITED</option><option value="ELITE">ELITE</option></select></div></div>
+        <div id="subscriptionMetrics" class="mini-metrics"></div>
+        <div class="dashboard-grid"><article class="panel"><div class="panel-head"><h3>تحويلات تنتظر المراجعة</h3></div><div id="subscriptionPending"></div></article><article class="panel"><div class="panel-head"><h3>سجل الاشتراكات</h3></div><div id="subscriptionTable" class="data-shell"></div></article></div>
+      </section>
+
+      <section id="view-settlements" class="view" data-admin>
+        <div class="section-head"><div><h2>التسويات والاحتجاز المالي</h2><p class="subtle">عرض المبالغ المحتجزة، صافي المحامي، رسوم المنصة والنزاعات قبل أي قرار.</p></div><div class="filters"><select id="settlementStatus"><option value="">كل الحالات</option><option value="PENDING_CLIENT_CONFIRMATION">بانتظار العميل</option><option value="PENDING_MANUAL_REVIEW">مراجعة يدوية</option><option value="APPROVED_FOR_SETTLEMENT">جاهز للتسوية</option><option value="DISPUTED">نزاع</option><option value="SETTLED">تمت التسوية</option></select></div></div>
+        <div id="settlementMetrics" class="mini-metrics"></div><div id="settlementTable" class="data-shell"></div>
+      </section>
+
+      <section id="view-services" class="view">
+        <div class="section-head"><div><h2>كتالوج الخدمات</h2><p class="subtle">إدارة توافر الخدمة ونوعها وترتيبها دون عرض مفاتيح تقنية للمشغل.</p></div></div>
+        <div id="serviceGrid" class="service-grid"></div>
+      </section>
+
+      <section id="view-directory" class="view" data-admin>
+        <div class="section-head"><div><h2>الدليل القانوني</h2><p class="subtle">بحث سريع في الجهات القانونية والخدمية المرتبطة بالعمل.</p></div><div class="filters"><input id="directorySearch" placeholder="بحث بالاسم أو العنوان"><select id="directoryCategory"><option value="">كل الفئات</option><option value="COURT">محاكم</option><option value="POLICE">شرطة</option><option value="PROSECUTION">نيابة</option><option value="NOTARY">شهر عقاري</option><option value="BAR_ASSOCATION">نقابة المحامين</option><option value="GOVERNMENT">جهة حكومية</option><option value="OTHER">أخرى</option></select></div></div>
+        <div id="directoryGrid" class="directory-grid"></div>
+      </section>
+
+      <section id="view-settings" class="view">
+        <div class="section-head"><div><h2>إعدادات التشغيل</h2><p class="subtle">الإعدادات التقنية مترجمة إلى ضوابط تشغيل مفهومة مع وصف ووحدة قياس.</p></div></div>
+        <div id="settingsGrid" class="settings-grid"></div>
+      </section>
+
+      <section id="view-audit" class="view" data-admin>
+        <div class="section-head"><div><h2>مستكشف العمليات</h2><p class="subtle">من نفّذ ماذا، على أي كيان، ومتى — مع بحث وتصفية وفتح التفاصيل.</p></div><div class="filters"><input id="auditSearch" placeholder="عملية، مستخدم، كيان..."><input id="auditAction" placeholder="Action exact"><input id="auditEntity" placeholder="Entity type"></div></div>
+        <div id="auditTable" class="data-shell"></div>
+      </section>
+
+      <section id="view-system" class="view" data-admin>
+        <div class="section-head"><div><h2>صحة النظام</h2><p class="subtle">مراقبة الـOutbox والإشعارات والطوارئ ومشاكل التشغيل بدل اكتشافها من المستخدمين.</p></div></div>
+        <div id="systemMetrics" class="metrics-grid"></div><div id="systemAlerts" class="panel"></div>
+      </section>
+    </main>
+  </div>
+
+  <aside id="detailDrawer" class="drawer is-hidden" aria-hidden="true"><div class="drawer-backdrop" data-close-drawer></div><div class="drawer-card"><header><div><p id="drawerEyebrow" class="eyebrow">DETAIL</p><h2 id="drawerTitle">التفاصيل</h2></div><button class="icon-button" data-close-drawer>×</button></header><div id="drawerBody" class="drawer-body"></div></div></aside>
+
+  <div id="commandPalette" class="palette is-hidden" aria-hidden="true"><div class="palette-backdrop" data-close-palette></div><div class="palette-card"><div class="palette-search"><span>⌕</span><input id="commandSearch" placeholder="انتقل إلى صفحة أو نفّذ أمرًا..."></div><div id="commandResults" class="palette-results"></div></div></div>
+  <div id="toast" class="toast is-hidden"></div>
+
+  <script type="module" src="./assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>استرجاع الحسابات — محتاج محامي</title>
+<style>
+:root{--bg:#f7f2eb;--ink:#17110d;--card:#fffdfa;--line:#e4d7ca;--orange:#f47a2a;--green:#19734b;--red:#b32d32;--muted:#75695f}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Tahoma,sans-serif}.shell{max-width:1200px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.top a,.top button,.btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:11px;padding:10px 14px;text-decoration:none;cursor:pointer;font:inherit}.btn.primary{background:var(--orange);border-color:var(--orange);font-weight:800}.btn.reject{color:var(--red)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}.muted{color:var(--muted)}.badge{display:inline-block;border-radius:99px;padding:5px 9px;background:#efe6dd;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.error{background:#f8e4e5;color:var(--red);padding:12px;border-radius:12px}.empty{text-align:center;padding:35px;color:var(--muted)}dialog{border:0;border-radius:16px;padding:20px;max-width:520px;width:calc(100% - 30px)}textarea{width:100%;min-height:110px;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit}.actions{display:flex;gap:8px;justify-content:flex-start;margin-top:12px}@media(max-width:650px){.grid{grid-template-columns:1fr}.shell{padding:14px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div><h1>طلبات استرجاع الحساب</h1><div class="muted">الموافقة لا تكشف كلمة المرور ولا سر الاسترجاع للمسؤول</div></div>
+    <div><a href="./index.html">لوحة الإدارة</a> <a href="./control-tower.html">مركز التشغيل</a> <button id="refresh">تحديث</button></div>
+  </div>
+  <div id="error"></div>
+  <div id="rows"></div>
+</div>
+<dialog id="decision">
+  <h3 id="decisionTitle"></h3>
+  <p class="muted">اكتب كيف تم التحقق من صاحب الحساب. السبب يُحفظ في سجل العمليات.</p>
+  <textarea id="notes" placeholder="مثال: تمت مطابقة بيانات الهوية ورقم الهاتف مع الملف المسجل..."></textarea>
+  <div class="actions"><button class="btn" id="cancel">إلغاء</button><button class="btn primary" id="confirm">تأكيد</button></div>
+</dialog>
+<script>
+const API='https://mohtaj-mohami-beta-production.up.railway.app/api/v1';
+const auth=JSON.parse(sessionStorage.getItem('mm_admin')||'null');
+if(!auth||auth.role!=='PLATFORM_ADMIN'){location.replace('./index.html')}
+const E=id=>document.getElementById(id),X=v=>String(v??'—').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let current=null,approve=false;
+async function api(path,opt={}){const r=await fetch(API+path,{...opt,headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth.token,...(opt.headers||{})}});if(r.status===401){sessionStorage.removeItem('mm_admin');location.replace('./index.html');return}if(!r.ok){let d={};try{d=await r.json()}catch{}throw Error(typeof d.detail==='string'?d.detail:(d.detail?.message||'تعذر إتمام الطلب'))}return r.status===204?null:r.json()}
+function role(v){return({CLIENT:'عميل',LAWYER:'محامي'})[v]||v}
+function openDecision(id,isApprove,name){current=id;approve=isApprove;E('notes').value='';E('decisionTitle').textContent=(isApprove?'الموافقة على استرجاع ':'رفض استرجاع ')+name;E('confirm').textContent=isApprove?'موافقة':'رفض';E('decision').showModal()}
+async function load(){try{E('error').innerHTML='';const rows=await api('/admin/account-recovery/requests?status_filter=PENDING');E('rows').innerHTML=rows.length?rows.map(r=>`<div class="card"><div><b>${X(r.display_name)}</b> <span class="badge">${X(role(r.role))}</span></div><div class="grid"><div><span class="muted">البريد</span><br>${X(r.email)}</div><div><span class="muted">الهاتف</span><br><span dir="ltr">${X(r.phone)}</span></div><div><span class="muted">حالة الحساب</span><br>${X(r.account_status)}</div><div><span class="muted">التوثيق</span><br>${X(r.role==='LAWYER'?r.lawyer_verification_status:r.identity_status)}</div><div><span class="muted">تاريخ الطلب</span><br>${X(new Date(r.created_at).toLocaleString('ar-EG'))}</div><div><span class="muted">المحاولات الخاطئة</span><br>${X(r.failed_attempts)}</div></div><div class="actions"><button class="btn primary" onclick="openDecision('${r.request_id}',true,'${X(r.display_name)}')">موافقة بعد التحقق</button><button class="btn reject" onclick="openDecision('${r.request_id}',false,'${X(r.display_name)}')">رفض</button></div></div>`).join(''):'<div class="empty">لا توجد طلبات استرجاع معلقة</div>'}catch(e){E('error').innerHTML=`<div class="error">${X(e.message)}</div>`}}
+E('cancel').onclick=()=>E('decision').close();
+E('confirm').onclick=async()=>{const notes=E('notes').value.trim();if(notes.length<10){alert('اكتب وصفًا واضحًا لطريقة التحقق قبل اتخاذ القرار');return}try{await api('/admin/account-recovery/'+current+'/decide',{method:'POST',body:JSON.stringify({approved:approve,notes})});E('decision').close();load()}catch(e){alert(e.message)}};
+E('refresh').onclick=load;load();
+</script>
+</body>
+</html>
