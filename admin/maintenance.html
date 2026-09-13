@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#071728">
+  <title>صيانة الحسابات — محتاج محامي</title>
+  <link rel="stylesheet" href="./assets/admin.css">
+  <style>
+    body{background:#071728;color:#f7f1e7}.maint{max-width:980px;margin:auto;padding:24px}.maint-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.maint-card{background:#fff;color:#071728;border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 16px 40px rgba(0,0,0,.18)}.maint-card h2{margin-top:0}.maint-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.maint label{display:grid;gap:6px;font-weight:700}.maint input,.maint textarea{width:100%;border:1px solid #d8d0c4;border-radius:12px;padding:12px;font:inherit}.maint textarea{min-height:96px}.maint-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.danger{background:#9b1c1c!important;color:white!important}.result{margin-top:12px;padding:12px;border-radius:12px;background:#f2eee7;white-space:pre-wrap}.muted{color:#6f675e}.back{color:#e0aa3e;text-decoration:none;font-weight:800}@media(max-width:700px){.maint-grid{grid-template-columns:1fr}.maint{padding:14px}}
+  </style>
+</head>
+<body>
+  <main class="maint">
+    <div class="maint-head">
+      <div><p class="eyebrow">PLATFORM ADMIN</p><h1>صيانة الحسابات</h1><p class="muted">عمليات حساسة ومقيدة بمدير المنصة فقط.</p></div>
+      <a class="back" href="./index.html">← لوحة الإدارة</a>
+    </div>
+
+    <section class="maint-card">
+      <h2>Google Play Reviewer</h2>
+      <p class="muted">اعتماد مباشر للحساب الثابت المستخدم في مراجعة Google Play، مع إلغاء/استبدال أي طلب استرجاع معلّق لنفس الحساب.</p>
+      <div class="maint-actions"><button id="approveReviewer" class="button primary">اعتماد الحساب وإلغاء الاسترجاع</button></div>
+      <div id="reviewerResult" class="result" hidden></div>
+    </section>
+
+    <section class="maint-card">
+      <h2>حذف حساب وهمي / تجريبي</h2>
+      <p class="muted">الحذف النهائي مسموح فقط لحساب عميل/محامٍ بدون مراجع تشغيلية أو قانونية أو مالية محمية. لو فيه سجل أعمال، السيرفر سيرفض الحذف.</p>
+      <div class="maint-grid">
+        <label>البريد الإلكتروني للحساب<input id="deleteEmail" type="email" dir="ltr" placeholder="test@example.com"></label>
+        <label>اكتب DELETE للتأكيد<input id="deleteConfirm" dir="ltr" placeholder="DELETE"></label>
+      </div>
+      <label style="margin-top:12px">سبب الحذف<textarea id="deleteReason" placeholder="مثال: حساب تجريبي تم إنشاؤه أثناء QA ولا يحتوي على نشاط حقيقي"></textarea></label>
+      <div class="maint-actions"><button id="deleteFake" class="button danger">حذف الحساب الوهمي نهائيًا</button></div>
+      <div id="deleteResult" class="result" hidden></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import {getAuth, isPlatformAdmin, request} from './assets/api.js';
+
+    const auth = getAuth();
+    if (!auth || !isPlatformAdmin()) location.replace('./index.html');
+
+    const show = (id, value) => {
+      const node = document.getElementById(id);
+      node.hidden = false;
+      node.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    };
+
+    document.getElementById('approveReviewer').onclick = async () => {
+      const button = document.getElementById('approveReviewer');
+      button.disabled = true;
+      try {
+        const result = await request('/admin/maintenance/google-play-reviewer/force-approve', {method:'POST'});
+        show('reviewerResult', result);
+      } catch (error) {
+        show('reviewerResult', error.message);
+      } finally {
+        button.disabled = false;
+      }
+    };
+
+    document.getElementById('deleteFake').onclick = async () => {
+      const email = document.getElementById('deleteEmail').value.trim().toLowerCase();
+      const confirmation = document.getElementById('deleteConfirm').value.trim();
+      const reason = document.getElementById('deleteReason').value.trim();
+      if (!email || confirmation !== 'DELETE' || reason.length < 10) {
+        show('deleteResult', 'راجع البريد، واكتب DELETE، وأدخل سببًا واضحًا لا يقل عن 10 حروف.');
+        return;
+      }
+      if (!confirm(`سيتم حذف الحساب ${email} نهائيًا إذا كان حسابًا تجريبيًا آمن الحذف. استمرار؟`)) return;
+      const button = document.getElementById('deleteFake');
+      button.disabled = true;
+      try {
+        const users = await request('/admin/users');
+        const target = users.find((row) => String(row.email || '').toLowerCase() === email);
+        if (!target) throw new Error('الحساب غير موجود.');
+        const result = await request(`/admin/maintenance/users/${target.id || target.user_id}/fake-account`, {
+          method:'DELETE',
+          body: JSON.stringify({email_confirm: email, confirmation, reason}),
+        });
+        show('deleteResult', result);
+      } catch (error) {
+        const detail = error.detail && typeof error.detail === 'object' ? JSON.stringify(error.detail, null, 2) : error.message;
+        show('deleteResult', detail);
+      } finally {
+        button.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
